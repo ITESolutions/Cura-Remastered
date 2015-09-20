@@ -8,43 +8,17 @@
  */
  
  /******************************************************************************************/
+ /*                                    Error Handling                                      */
+ /******************************************************************************************/
  
  if (!defined ('ERROR_FILE')) {
      define ('ERROR_FILE', 'error.log');
  }
  
-/**
- * Function to get the name of the class that called the current method or function
- * @return string Returns a string on success or boolean false on fail
- */
-function get_calling_class() {
-    $trace = debug_backtrace ();
-    if (isset ($trace[2])) {
-        $class = $trace[2]['class'];
-        if (stristr($class, '\\')) {
-            $array = explode ('\\', $class);
-            return end ($array);
-        }
-        return $class;
-    }
-    return FALSE;
-}
-
-/**
- * Function to get the calling method or function
- * @access public
- * @return array_assoc Returns an associative array with the class as the key and the method or function as the value or false on failure
- */
-function get_calling_method() {
-    $trace = debug_backtrace ();
-    if (isset($trace [1])) {
-        return array(
-            $trace[1]['class'] => $trace[1]['function']
-        );
-    }
-    return FALSE;
-}
-
+ if (!defined ('ERROR_VIEW')) {
+     define ('ERROR_VIEW', 'message');
+ }
+ 
 /**
  * Error handler
  */
@@ -70,6 +44,47 @@ function log_error($error) {
     error_log ($msg . PHP_EOL, 3, ERROR_FILE);
 }
 
+ 
+/**
+ * Function to get the name of the class that called the current method or function
+ * @return string Returns a string on success or boolean false on fail
+ */
+function get_calling_class() {
+    $trace = debug_backtrace ();
+    if (isset ($trace[2])) {
+        $class = $trace[2]['class'];
+        if (stristr($class, '\\')) {
+            $array = explode ('\\', $class);
+            return end ($array);
+        }
+        return $class;
+    }
+    return FALSE;
+}
+
+ /******************************************************************************************/
+ /*                                          Misc                                          */
+ /******************************************************************************************/
+
+/**
+ * Function to get the calling method or function
+ * @access public
+ * @return array_assoc Returns an associative array with the class as the key and the method or function as the value or false on failure
+ */
+function get_calling_method() {
+    $trace = debug_backtrace ();
+    if (isset($trace [1])) {
+        return array(
+            $trace[1]['class'] => $trace[1]['function']
+        );
+    }
+    return FALSE;
+}
+
+ /******************************************************************************************/
+ /*                                        Autoloader                                      */
+ /******************************************************************************************/
+
 /**
  * Autoloader function using namespaces
  * 
@@ -80,6 +95,7 @@ function autoload($class_name) {
     $file = str_replace('\\', DS, $class_name);
     require_once $file . '.php';
 }
+
 /**
  * Function to safely rewrite a file after securing a file resource lock.
  * 
