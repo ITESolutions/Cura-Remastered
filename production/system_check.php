@@ -1,13 +1,20 @@
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-if (version_compare(PHP_VERSION, '5.3', '<'))
-{
-    die('Your host needs to use PHP 5.3 or higher to run this application');
+
+// Minimum version of PHP required
+if (!defined('MIN_PHP_VER') {
+    define ('MIN_PHP_VER', '5.3');
 }
-if (defined('WEB_ONLY') && !filter_input(INPUT_SERVER, 'REQUEST_URI')) {
-    die('This script cannot be executed from the command line');
+
+if (version_compare(PHP_VERSION, MIN_PHP_VER, '<'))
+{
+    die('Your host needs to use PHP " . MIN_PHP_VER . " or higher to run this application');
+}
+
+// Refuse non-web requests by default
+if (!defined ('WEB_ONLY')) {
+    define ('WEB_ONLY', true);
+}
+
+if (defined ('WEB_ONLY') && !filter_input (INPUT_SERVER, 'REQUEST_URI')) {
+    die ('This script cannot be executed from the command line');
 }
